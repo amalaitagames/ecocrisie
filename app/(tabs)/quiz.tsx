@@ -24,11 +24,14 @@ export default function QuizScreen() {
     const [selected, setSelected] = useState(null);
     const [score, setScore] = useState(0);
     const [showConfetti, setShowConfetti] = useState(false);
+    const [showEasterEgg, setShowEasterEgg] = useState(false);
     const isDark = useColorScheme() === 'dark';
     const theme = getTheme(isDark);
     const router = useRouter();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const flyX = useRef(new Animated.Value(0)).current;
+    const flyY = useRef(new Animated.Value(0)).current;
 
     // → Shuffle and pick 5 questions when component mounts
     useEffect(() => {
@@ -50,12 +53,41 @@ export default function QuizScreen() {
         }
     }, [showExplanation]);
 
+    const rollEasterEgg = () => {
+        const chance = Math.random();
+        if (chance < 0.05) {
+            setShowEasterEgg(true);
+            animateEasterEgg();
+        }
+    };
+
+    const animateEasterEgg = () => {
+        const randomX = Math.floor(Math.random() * 250) - 125; // mouvement horizontal
+        const randomY = Math.floor(Math.random() * 400) - 200; // mouvement vertical
+
+        Animated.parallel([
+            Animated.timing(flyX, {
+                toValue: randomX,
+                duration: 1500,
+                useNativeDriver: true,
+            }),
+            Animated.timing(flyY, {
+                toValue: randomY,
+                duration: 1500,
+                useNativeDriver: true,
+            }),
+        ]).start(() => {
+            animateEasterEgg(); // relance en boucle
+        });
+    };
+
     const resetState = () => {
         setCurrentQuestion(0);
         setShowExplanation(false);
         setSelected(null);
         setScore(0);
         setShowConfetti(false);
+        rollEasterEgg();
     };
 
     const handleShare = async (score: number) => {
@@ -93,7 +125,7 @@ export default function QuizScreen() {
             const finalScore = score + (selected === questions[currentQuestion].answer ? 1 : 0);
             Alert.alert(
                 'Quiz terminé',
-                `Vous avez obtenu ${finalScore}/5 réponses correctes.`,
+                `Vous avez obtenu ${score}/5 réponses correctes.`,
                 [
                     {
                         text: 'Partager mes résultats',
@@ -107,13 +139,20 @@ export default function QuizScreen() {
                             resetState();
                         },
                     },
-                    { text: 'Retour à l’accueil', onPress: () => router.replace('/') },
+                    { text: 'Retour à l’accueil', onPress: () => {
+                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                            setQuestions(reshuffled.slice(0, 5));
+                            resetState();
+                            router.replace('/')
+                        }
+                    },
                 ]
             );
         } else {
             setCurrentQuestion((q) => q + 1);
             setSelected(null);
             setShowExplanation(false);
+            rollEasterEgg();
         }
     };
 
@@ -127,6 +166,8 @@ export default function QuizScreen() {
                     text: 'Quitter',
                     style: 'destructive',
                     onPress: () => {
+                        const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                        setQuestions(reshuffled.slice(0, 5));
                         resetState();
                         router.replace('/');
                     },
@@ -140,6 +181,31 @@ export default function QuizScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundEnd }]}>
+            {showEasterEgg && (
+                <Animated.View
+                    style={[
+                        styles.easterEgg,
+                        {
+                            transform: [
+                                { translateX: flyX },
+                                { translateY: flyY },
+                            ],
+                        },
+                    ]}
+                >
+                    <TouchableOpacity
+                        onPress={() => {
+                            Alert.alert(
+                                "🌿 Surprise écologique !",
+                                "Une IA peut consommer des centaines de litres d’eau pour fonctionner... L’écologie numérique compte aussi 💧"
+                            );
+                            setShowEasterEgg(false);
+                        }}
+                    >
+                        <Text style={styles.easterEggIcon}>🐞</Text>
+                    </TouchableOpacity>
+                </Animated.View>
+            )}
             <View style={styles.header}>
                 <TouchableOpacity onPress={handleBack}>
                     <Text style={[styles.backButton, { color: theme.text }]}>←</Text>
@@ -148,6 +214,9 @@ export default function QuizScreen() {
             </View>
 
             <View style={styles.content}>
+                <View style={[styles.logoCircle, { backgroundColor: isDark ? '#065f46' : '#d1fae5' }]}>
+                    <Text style={styles.logo}>🌱</Text>
+                </View>
                 <Text style={[styles.questionText, { color: theme.text }]}>
                     {question.question}
                 </Text>
@@ -251,5 +320,24 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: '600',
+    },
+    logoCircle: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    logo: {
+        fontSize: 28,
+    },
+    easterEggIcon: {
+        fontSize: 24,
+    },
+    easterEgg: {
+        position: 'absolute',
+        bottom: 100,
+        left: 100,
+        zIndex: 10,
     },
 });
