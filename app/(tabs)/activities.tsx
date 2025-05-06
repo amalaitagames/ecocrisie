@@ -1,26 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  useColorScheme,
-  TouchableOpacity,
-} from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { useRouter } from 'expo-router';
+import {StatusBar} from 'expo-status-bar';
+import React, {useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View,} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import {useRouter} from 'expo-router';
 
 import WasteForm from '../../components/forms/WasteForm';
 import InfoCommForm from '../../components/forms/InfoCommForm';
 import GoodsForm from '../../components/forms/GoodsForm';
+import {ClimatiqApiService} from "@/service/climatiq.api.service";
+import {ClimatiqRequest} from "@/enitities/ClimatiqRequest";
+import {EnumActivityType} from "@/enitities/enums/EnumActivityType";
+import {InfoAndComRequestParams} from "@/enitities/InfoAndComRequestParams";
+import {GoodAndServicesRequestParams} from "@/enitities/GoodAndServicesRequestParams";
+import {WasteRequestParams} from "@/enitities/WasteRequestParams";
 
 export default function ActivitiesScreen() {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const [activityType, setActivityType] = useState('waste');
-
+  const [activityRequest, setActivityRequest] = useState<ClimatiqRequest>();
   const isDark = colorScheme === 'dark';
   const theme = {
     background: isDark ? '#121212' : '#ffffff',
@@ -29,21 +27,67 @@ export default function ActivitiesScreen() {
     subtext: isDark ? '#cbd5e1' : '#475569',
     primary: '#10b981',
   };
+  const dataVersion = '^0';
+
+  const buildRequest = (activityRequestBuild: InfoAndComRequestParams | GoodAndServicesRequestParams | WasteRequestParams , activityType: EnumActivityType) => {
+   let request: ClimatiqRequest;
+    switch (activityType) {
+      case EnumActivityType.INFO: {
+        request = {
+          emissionFactor: {
+            activityId: 'networking-provider_aws-region_eu_west_3',
+            dataVersion: dataVersion
+          },
+          activityParameters: activityRequestBuild,
+        }
+      }
+      break;
+      case EnumActivityType.GOOD:
+        request = {
+          emissionFactor: {
+            activityId: 'textiles-type_textiles',
+            dataVersion: dataVersion
+          },
+          activityParameters: activityRequestBuild,
+        }
+      break;
+      case EnumActivityType.WASTE:
+        request = {
+          emissionFactor: {
+            activityId: 'waste-type_batteries_and_accumulators-disposal_method_average_end_of_life',
+            dataVersion: dataVersion
+          },
+          activityParameters: activityRequestBuild,
+        }
+      break;
+    }
+    setActivityRequest(request);
+  }
 
   const renderDynamicForm = () => {
     switch (activityType) {
       case 'waste':
-        return <WasteForm />;
+        return <WasteForm onSubmit={buildRequest}/>;
       case 'information and communication':
-        return <InfoCommForm />;
+        return <InfoCommForm onSubmit={buildRequest}/>;
       case 'goods and services':
-        return <GoodsForm />;
+        return <GoodsForm onSubmit={buildRequest}/>;
       default:
         return null;
     }
   };
 
   const handleSubmit = () => {
+    let appelApi = new ClimatiqApiService();
+    if(activityRequest !== undefined) {
+      appelApi.getCo2Consommation(activityRequest).then(
+          value => {
+          // TODO faire ça bien
+            alert("La consommation de C02 est de Xkg")
+          }
+      )
+    }
+
   };
 
   return (

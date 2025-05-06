@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "ecocrisie",
-    "slug": "ecocrisie",
+    "name": "Ecocrisie",
+    "slug": "l’appli qui fait réfléchir… proprement",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "ecocrisie",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TextInput, useColorScheme, View,} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import {WasteRequestParams} from "@/enitities/WasteRequestParams";
+import {EnumActivityType} from "@/enitities/enums/EnumActivityType";
+import {WeightUnitEnum} from "@/enitities/enums/WeightUnitEnum";
 
-const WasteForm = () => {
+export default function WasteForm(props) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -20,11 +17,19 @@ const WasteForm = () => {
   };
 
   const [weight, setWeight] = useState('');
-  const [unit, setUnit] = useState('kg');
+  const [unit, setUnit] = useState(WeightUnitEnum.KG);
+
+  const buildWasteRequest = () => {
+    let wasteRequest: WasteRequestParams = {
+      weight: +weight,
+      weight_unit: unit.toString(),
+    }
+    props.onSubmit(wasteRequest, EnumActivityType.WASTE);
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: theme.text }]}>Déchets</Text>
+      <Text style={[styles.label, { color: theme.text }]}>Déchets électroniques</Text>
 
       <View style={styles.row}>
         <TextInput
@@ -40,7 +45,10 @@ const WasteForm = () => {
           placeholder="Poids"
           placeholderTextColor={theme.border}
           value={weight}
-          onChangeText={setWeight}
+          onChangeText={(value) => {
+            setWeight(value)
+            buildWasteRequest()
+          }}
         />
 
         <View
@@ -54,14 +62,17 @@ const WasteForm = () => {
         >
           <Picker
             selectedValue={unit}
-            onValueChange={(itemValue) => setUnit(itemValue)}
+            onValueChange={(itemValue) => {
+              setUnit(itemValue)
+              buildWasteRequest()
+            }}
             style={{ color: theme.text }}
           >
-            <Picker.Item label="g" value="g" />
-            <Picker.Item label="kg" value="kg" />
-            <Picker.Item label="t" value="t" />
-            <Picker.Item label="ton" value="ton" />
-            <Picker.Item label="lb" value="lb" />
+            <Picker.Item label="g" value={WeightUnitEnum.G} />
+            <Picker.Item label="kg" value={WeightUnitEnum.KG} />
+            <Picker.Item label="t" value={WeightUnitEnum.T} />
+            <Picker.Item label="ton" value={WeightUnitEnum.TON} />
+            <Picker.Item label="lb" value={WeightUnitEnum.LB} />
           </Picker>
         </View>
       </View>
@@ -99,5 +110,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-export default WasteForm;

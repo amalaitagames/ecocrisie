@@ -1,10 +1,11 @@
 import {StyleSheet, Text, TextInput, useColorScheme, View} from 'react-native';
 import {useState} from "react";
 import {Picker} from "@react-native-picker/picker";
-import {MoneyUnitEnum} from "@/enitities/enums/MoneyUnitEnum";
 import {DataUnitEnum} from "@/enitities/enums/DataUnitEnum";
+import {EnumActivityType} from "@/enitities/enums/EnumActivityType";
+import {InfoAndComRequestParams} from "@/enitities/InfoAndComRequestParams";
 
-const InfoCommForm = () => {
+const InfoCommForm = (props) => {
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
 
@@ -16,7 +17,15 @@ const InfoCommForm = () => {
     };
 
     const [data, setData] = useState('');
-    const [dataSize, setDataSize] = useState('MB');
+    const [dataSize, setDataSize] = useState(DataUnitEnum.MEGABYTE);
+
+    const buildInfoRequest = () => {
+        let infoRequest: InfoAndComRequestParams = {
+            data: +data,
+            data_unit: dataSize.toString(),
+        }
+        props.onSubmit(infoRequest, EnumActivityType.INFO);
+    }
 
     return (
         <View style={styles.container}>
@@ -36,7 +45,10 @@ const InfoCommForm = () => {
                     placeholder="10, 100, ..."
                     placeholderTextColor={theme.border}
                     value={data}
-                    onChangeText={(dataChange) => setData(dataChange)}
+                    onChangeText={(dataChange) => {
+                        setData(dataChange)
+                        buildInfoRequest()
+                    }}
                 />
 
                 <View
@@ -50,7 +62,10 @@ const InfoCommForm = () => {
                 >
                     <Picker
                         selectedValue={dataSize}
-                        onValueChange={(itemValue) => setDataSize(itemValue)}
+                        onValueChange={(itemValue) => {
+                            setDataSize(itemValue)
+                            buildInfoRequest()
+                        }}
                         style={{ color: theme.text }}
                     >
                         <Picker.Item label={DataUnitEnum.MEGABYTE} value={DataUnitEnum.MEGABYTE} />

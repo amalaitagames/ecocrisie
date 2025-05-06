@@ -1,8 +1,6 @@
-import {WeightUnitEnum} from "@/enitities/enums/WeightUnitEnum";
-
-export interface WasteRequestParams {
+export interface WasteRequestParams  {
 
     weight: number,
-    weightUnit: WeightUnitEnum
+    weight_unit: string
 
 }

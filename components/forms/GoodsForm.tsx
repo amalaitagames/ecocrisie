@@ -1,9 +1,11 @@
-import {View,Text, useColorScheme, TextInput, StyleSheet,} from 'react-native';
+import {StyleSheet, Text, TextInput, useColorScheme, View,} from 'react-native';
 import {useState} from "react";
 import {Picker} from "@react-native-picker/picker";
 import {MoneyUnitEnum} from "@/enitities/enums/MoneyUnitEnum";
+import {EnumActivityType} from "@/enitities/enums/EnumActivityType";
+import {GoodAndServicesRequestParams} from "@/enitities/GoodAndServicesRequestParams";
 
-const GoodsForm = () => {
+const GoodsForm = (props) => {
 
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
@@ -16,7 +18,15 @@ const GoodsForm = () => {
     };
 
     const [price, setPrice] = useState('');
-    const [moneyUnit, setMoneyUnit] = useState('eur');
+    const [moneyUnit, setMoneyUnit] = useState(MoneyUnitEnum.EURO);
+
+    const buildGoodRequest = () => {
+        let goodRequest: GoodAndServicesRequestParams = {
+            money: +price,
+            money_unit: moneyUnit.toString(),
+        }
+        props.onSubmit(goodRequest, EnumActivityType.GOOD);
+    }
 
     return (
         <View style={styles.container}>
@@ -36,7 +46,10 @@ const GoodsForm = () => {
                     placeholder="Prix"
                     placeholderTextColor={theme.border}
                     value={price}
-                    onChangeText={(priceChange) => setPrice(priceChange)}
+                    onChangeText={(priceChange) => {
+                        setPrice(priceChange)
+                        buildGoodRequest()
+                    }}
                 />
 
                 <View
@@ -50,7 +63,10 @@ const GoodsForm = () => {
                 >
                     <Picker
                         selectedValue={moneyUnit}
-                        onValueChange={(itemValue) => setMoneyUnit(itemValue)}
+                        onValueChange={(itemValue) => {
+                            setMoneyUnit(itemValue)
+                            buildGoodRequest()
+                        }}
                         style={{ color: theme.text }}
                     >
                         <Picker.Item label="EURO" value={MoneyUnitEnum.EURO} />

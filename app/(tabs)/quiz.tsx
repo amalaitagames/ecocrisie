@@ -1,17 +1,21 @@
+import { quotes } from '@/app/constants/quotes';
+import { getTheme } from '@/app/constants/theme';
+import ModalAlert from '../components/modalAlert';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    SafeAreaView,
-    useColorScheme,
     Alert,
     Animated,
+    Platform,
+    SafeAreaView,
+    Share,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useColorScheme,
+    View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { getTheme } from '@/app/constants/theme';
 import fullQuizData from '../../assets/json/quiz.json';
 
 export default function QuizScreen() {
@@ -21,11 +25,14 @@ export default function QuizScreen() {
     const [selected, setSelected] = useState(null);
     const [score, setScore] = useState(0);
     const [showConfetti, setShowConfetti] = useState(false);
+    const [showEasterEgg, setShowEasterEgg] = useState(false);
     const isDark = useColorScheme() === 'dark';
     const theme = getTheme(isDark);
     const router = useRouter();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const flyX = useRef(new Animated.Value(0)).current;
+    const flyY = useRef(new Animated.Value(0)).current;
 
     // → Shuffle and pick 5 questions when component mounts
     useEffect(() => {
@@ -47,12 +54,73 @@ export default function QuizScreen() {
         }
     }, [showExplanation]);
 
+    const rollEasterEgg = () => {
+        const chance = Math.random();
+        if (chance < 0.05) {
+            setShowEasterEgg(true);
+            animateEasterEgg();
+        }
+    };
+
+    const [webAlert, setWebAlert] = useState<{
+        visible: boolean;
+        title: string;
+        message: string;
+        buttons: { text: string; onPress: () => void; style?: 'default' | 'cancel' | 'destructive' }[];
+    }>({
+        visible: false,
+        title: '',
+        message: '',
+        buttons: [],
+    });
+
+    const animateEasterEgg = () => {
+        const randomX = Math.floor(Math.random() * 250) - 125; // mouvement horizontal
+        const randomY = Math.floor(Math.random() * 400) - 200; // mouvement vertical
+
+        Animated.parallel([
+            Animated.timing(flyX, {
+                toValue: randomX,
+                duration: 1500,
+                useNativeDriver: true,
+            }),
+            Animated.timing(flyY, {
+                toValue: randomY,
+                duration: 1500,
+                useNativeDriver: true,
+            }),
+        ]).start(() => {
+            animateEasterEgg(); // relance en boucle
+        });
+    };
+
     const resetState = () => {
         setCurrentQuestion(0);
         setShowExplanation(false);
         setSelected(null);
         setScore(0);
         setShowConfetti(false);
+        rollEasterEgg();
+    };
+
+    const handleShare = async (score: number) => {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      const message = `${quote}\n\nJ'ai obtenu ${score}/5 au quiz Écocrisie 🌱\nEt toi ? ➡️ https://ecocrisie.app`;
+
+      if (Platform.OS === 'web') {
+        try {
+          await navigator.clipboard.writeText(message);
+          alert('Texte copié dans le presse-papier 📋');
+        } catch (err) {
+          alert('Échec de la copie dans le presse-papier.');
+        }
+      } else {
+        try {
+          await Share.share({ message });
+        } catch (error: any) {
+          Alert.alert('Erreur lors du partage', error.message);
+        }
+      }
     };
 
     const handleAnswer = (option: React.SetStateAction<null>) => {
@@ -66,45 +134,123 @@ export default function QuizScreen() {
     };
 
     const nextQuestion = () => {
+        const finalScore = score + (selected === questions[currentQuestion].answer ? 1 : 0);
+
         if (currentQuestion + 1 >= 5) {
-            Alert.alert(
-                'Quiz terminé',
-                `Vous avez obtenu ${score + (selected === questions[currentQuestion].answer ? 1 : 0)}/5 réponses correctes.`,
-                [
-                    {
-                        text: 'Rejouer',
-                        onPress: () => {
-                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
-                            setQuestions(reshuffled.slice(0, 5));
-                            resetState();
+            if (Platform.OS === 'web') {
+                setWebAlert({
+                    visible: true,
+                    title: 'Quiz terminé',
+                    message: `Vous avez obtenu ${finalScore}/5 réponses correctes.`,
+                    buttons: [
+                        {
+                            text: 'Partager mes résultats',
+                            onPress: () => handleShare(finalScore),
                         },
-                    },
-                    { text: 'Retour à l’accueil', onPress: () => router.replace('/') },
-                ]
-            );
+                        {
+                            text: 'Rejouer',
+                            onPress: () => {
+                                const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                                setQuestions(reshuffled.slice(0, 5));
+                                resetState();
+                                setWebAlert(prev => ({ ...prev, visible: false }));
+                            },
+                        },
+                        {
+                            text: 'Retour à l’accueil',
+                            onPress: () => {
+                                const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                                setQuestions(reshuffled.slice(0, 5));
+                                resetState();
+                                router.replace('/');
+                                setWebAlert(prev => ({ ...prev, visible: false }));
+                            },
+                            style: 'destructive',
+                        },
+                    ],
+                });
+            } else {
+                Alert.alert(
+                    'Quiz terminé',
+                    `Vous avez obtenu ${score}/5 réponses correctes.`,
+                    [
+                        {
+                            text: 'Partager mes résultats',
+                            onPress: () => handleShare(finalScore),
+                        },
+                        {
+                            text: 'Rejouer',
+                            onPress: () => {
+                                const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                                setQuestions(reshuffled.slice(0, 5));
+                                resetState();
+                            },
+                        },
+                        {
+                            text: 'Retour à l’accueil',
+                            onPress: () => {
+                                const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                                setQuestions(reshuffled.slice(0, 5));
+                                resetState();
+                                router.replace('/');
+                            },
+                            style: 'destructive',
+                        },
+                    ]
+                );
+            }
         } else {
             setCurrentQuestion((q) => q + 1);
             setSelected(null);
             setShowExplanation(false);
+            rollEasterEgg();
         }
     };
 
     const handleBack = () => {
-        Alert.alert(
-            'Quitter le quiz',
-            'Voulez-vous quitter le quiz ? Votre progression sera perdue.',
-            [
-                { text: 'Annuler', style: 'cancel' },
-                {
-                    text: 'Quitter',
-                    style: 'destructive',
-                    onPress: () => {
-                        resetState();
-                        router.replace('/');
+        if (Platform.OS === 'web') {
+            setWebAlert({
+                visible: true,
+                title: 'Quitter le quiz',
+                message: 'Voulez-vous quitter le quiz ? Votre progression sera perdue.',
+                buttons: [
+                    {
+                        text: 'Annuler',
+                        style: 'cancel',
+                        onPress: () => setWebAlert(prev => ({ ...prev, visible: false })),
                     },
-                },
-            ]
-        );
+                    {
+                        text: 'Quitter',
+                        style: 'destructive',
+                        onPress: () => {
+                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                            setQuestions(reshuffled.slice(0, 5));
+                            resetState();
+                            router.replace('/');
+                            setWebAlert(prev => ({ ...prev, visible: false }));
+                        },
+                    },
+                ],
+            });
+        } else {
+            Alert.alert(
+                'Quitter le quiz',
+                'Voulez-vous quitter le quiz ? Votre progression sera perdue.',
+                [
+                    { text: 'Annuler', style: 'cancel' },
+                    {
+                        text: 'Quitter',
+                        style: 'destructive',
+                        onPress: () => {
+                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                            setQuestions(reshuffled.slice(0, 5));
+                            resetState();
+                            router.replace('/');
+                        },
+                    },
+                ]
+            );
+        }
     };
 
     if (questions.length === 0) return null;
@@ -112,6 +258,38 @@ export default function QuizScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundEnd }]}>
+            <ModalAlert
+                visible={webAlert.visible}
+                title={webAlert.title}
+                message={webAlert.message}
+                buttons={webAlert.buttons}
+                onClose={() => setWebAlert(prev => ({ ...prev, visible: false }))}
+            />
+            {showEasterEgg && (
+                <Animated.View
+                    style={[
+                        styles.easterEgg,
+                        {
+                            transform: [
+                                { translateX: flyX },
+                                { translateY: flyY },
+                            ],
+                        },
+                    ]}
+                >
+                    <TouchableOpacity
+                        onPress={() => {
+                            Alert.alert(
+                                "🌿 Surprise écologique !",
+                                "Une IA peut consommer des centaines de litres d’eau pour fonctionner... L’écologie numérique compte aussi 💧"
+                            );
+                            setShowEasterEgg(false);
+                        }}
+                    >
+                        <Text style={styles.easterEggIcon}>🐞</Text>
+                    </TouchableOpacity>
+                </Animated.View>
+            )}
             <View style={styles.header}>
                 <TouchableOpacity onPress={handleBack}>
                     <Text style={[styles.backButton, { color: theme.text }]}>←</Text>
@@ -120,6 +298,9 @@ export default function QuizScreen() {
             </View>
 
             <View style={styles.content}>
+                <View style={[styles.logoCircle, { backgroundColor: isDark ? '#065f46' : '#d1fae5' }]}>
+                    <Text style={styles.logo}>🌱</Text>
+                </View>
                 <Text style={[styles.questionText, { color: theme.text }]}>
                     {question.question}
                 </Text>
@@ -223,5 +404,24 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: '600',
+    },
+    logoCircle: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    logo: {
+        fontSize: 28,
+    },
+    easterEggIcon: {
+        fontSize: 24,
+    },
+    easterEgg: {
+        position: 'absolute',
+        bottom: 100,
+        left: 100,
+        zIndex: 10,
     },
 });

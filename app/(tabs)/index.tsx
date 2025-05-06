@@ -1,6 +1,7 @@
 import { getTheme } from "@/app/constants/theme";
-import { useRouter } from 'expo-router'; // au lieu de useNavigation
+import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import ecoTips from '@/assets/json/tips.json';
 import React from 'react';
 import {
   Image,
@@ -17,6 +18,12 @@ export default function HomeScreen() {
 
   const isDark = useColorScheme() === 'dark';
   const theme = getTheme(isDark);
+  const [ecoTip, setEcoTip] = React.useState('');
+
+  React.useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * ecoTips.length);
+    setEcoTip(ecoTips[randomIndex]);
+  }, []);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundStart }]}>
@@ -55,14 +62,11 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <View style={[styles.imageWrapper]}>
-          <Image
-            source={{
-              uri: 'https://images.unsplash.com/photo-1526401485004-2fa806b4e6f6?auto=format&fit=crop&w=1200&q=80',
-            }}
-            style={styles.image}
-            resizeMode="cover"
-          />
+        <View style={styles.ecoGuide}>
+          <Text style={styles.ecoEmoji}>🐞</Text>
+          <View style={[styles.ecoBubble, { backgroundColor: theme.card }]}>
+            <Text style={[styles.ecoText, { color: theme.text }]}>{ecoTip}</Text>
+          </View>
         </View>
 
         <View style={styles.buttons}>
@@ -119,6 +123,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 32,
     justifyContent: 'space-between',
+    maxWidth: 500,
+    alignSelf: 'center',
+    width: '100%',
   },
   header: {
     alignItems: 'center',
@@ -202,5 +209,35 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginTop: 40,
     opacity: 0.7,
+  },
+  ecoGuide: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 24,
+    flexWrap: 'wrap',
+  },
+
+  ecoEmoji: {
+    fontSize: 24,
+  },
+
+  ecoBubble: {
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    flexShrink: 1,
+    maxWidth: '85%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  ecoText: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    lineHeight: 20,
   },
 });
