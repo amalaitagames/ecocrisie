@@ -2,7 +2,6 @@ import {InfoAndComRequestParams} from '@/enitities/InfoAndComRequestParams';
 import {GoodAndServicesRequestParams} from '@/enitities/GoodAndServicesRequestParams';
 import {WasteRequestParams} from '@/enitities/WasteRequestParams';
 import {ClimatiqRequest} from "@/enitities/ClimatiqRequest";
-import {ClimatiqResponse} from '@/enitities/ClimatiqResponse';
 import {EnumActivityType} from "@/enitities/enums/EnumActivityType";
 
 export class ClimatiqApiService {
@@ -15,7 +14,6 @@ export class ClimatiqApiService {
     };
 
     public getCo2Consommation(activity: ClimatiqRequest): Promise<Response> {
-        let climatiqResponse: ClimatiqResponse;
             const response = fetch(this.climatiqurl,
                 {
                     method: 'POST',
