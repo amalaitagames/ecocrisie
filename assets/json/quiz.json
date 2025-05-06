@@ -1,0 +1,350 @@
+[
+  {
+    "id": 1,
+    "question": "Combien d’énergie consomme une requête sur un modèle d’IA générative comme ChatGPT, en moyenne ?",
+    "options": [
+      "Moins de 0,1 Wh",
+      "Environ 1 Wh",
+      "Entre 2 et 5 Wh",
+      "Plus de 10 Wh"
+    ],
+    "answer": "Environ 1 Wh",
+    "explanation": "Une requête ChatGPT peut consommer autant qu’allumer une ampoule LED pendant 1h, selon les estimations de HuggingFace."
+  },
+  {
+    "id": 2,
+    "question": "Vrai ou faux : Une recherche sur ChatGPT consomme plus d’énergie qu’une recherche sur Google.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Les modèles génératifs nécessitent plus de puissance de calcul que les algorithmes classiques utilisés par les moteurs de recherche."
+  },
+  {
+    "id": 3,
+    "question": "Quel est l’impact indirect d’un usage massif de l’IA générative sur l’environnement ?",
+    "options": [
+      "Augmentation du trafic routier",
+      "Dérèglement climatique",
+      "Épuisement des ressources en eau",
+      "Augmentation du télétravail"
+    ],
+    "answer": "Épuisement des ressources en eau",
+    "explanation": "Le refroidissement des data centers consomme énormément d’eau douce."
+  },
+  {
+    "id": 4,
+    "question": "Combien d’émissions de CO₂ sont générées en moyenne pour entraîner un grand modèle d’IA ?",
+    "options": [
+      "10 kg",
+      "1 tonne",
+      "50 tonnes",
+      "Plus de 300 tonnes"
+    ],
+    "answer": "Plus de 300 tonnes",
+    "explanation": "L'entraînement d’un modèle comme GPT-3 aurait émis plus de 300 tonnes de CO₂, soit l’équivalent de 700 000 km en voiture."
+  },
+  {
+    "id": 5,
+    "question": "Lequel de ces gestes aide à réduire votre empreinte numérique lors de l’usage d’une IA ?",
+    "options": [
+      "L’utiliser en mode sombre",
+      "Limiter les requêtes inutiles",
+      "Changer de police d’écriture",
+      "Fermer les autres onglets"
+    ],
+    "answer": "Limiter les requêtes inutiles",
+    "explanation": "Moins de requêtes = moins de calculs = moins de consommation énergétique des serveurs."
+  },
+  {
+    "id": 6,
+    "question": "Quel composant est particulièrement énergivore dans les data centers d’IA ?",
+    "options": [
+      "Disques durs",
+      "GPU",
+      "RAM",
+      "Alimentation électrique"
+    ],
+    "answer": "GPU",
+    "explanation": "Les GPU sont massivement utilisés pour entraîner et faire tourner les IA, consommant beaucoup d’énergie."
+  },
+  {
+    "id": 7,
+    "question": "Pourquoi les modèles d’IA générative sont-ils plus polluants que les algorithmes classiques ?",
+    "options": [
+      "Ils utilisent plus de texte",
+      "Ils sont plus complexes",
+      "Ils doivent se connecter à internet",
+      "Ils consomment des cookies"
+    ],
+    "answer": "Ils sont plus complexes",
+    "explanation": "Leur structure nécessite des milliards de paramètres à calculer à chaque requête."
+  },
+  {
+    "id": 8,
+    "question": "Vrai ou faux : Une image générée par IA a un coût carbone supérieur à une photo téléchargée.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Générer une image mobilise le GPU intensément, contrairement à une photo déjà existante."
+  },
+  {
+    "id": 9,
+    "question": "Quel pays concentre la majorité des data centers utilisés pour l’IA ?",
+    "options": [
+      "Inde",
+      "États-Unis",
+      "Chine",
+      "France"
+    ],
+    "answer": "États-Unis",
+    "explanation": "Les grandes firmes technologiques américaines hébergent la majorité de l’infrastructure IA mondiale."
+  },
+  {
+    "id": 10,
+    "question": "Combien de litres d’eau peuvent être nécessaires pour refroidir un seul data center par jour ?",
+    "options": [
+      "10 000",
+      "50 000",
+      "100 000",
+      "Plus d’un million"
+    ],
+    "answer": "Plus d’un million",
+    "explanation": "Certains centres consomment plus d’un million de litres d’eau par jour, selon les rapports officiels."
+  },
+  {
+    "id": 11,
+    "question": "Combien de fois par jour interrogez-vous une IA en moyenne (chatbot, image, etc.) ?",
+    "options": [
+      "0 à 2 fois",
+      "3 à 5 fois",
+      "6 à 10 fois",
+      "Plus de 10 fois"
+    ],
+    "answer": "0 à 2 fois",
+    "explanation": "La majorité des utilisateurs font moins de 3 requêtes IA par jour, mais l’usage augmente rapidement."
+  },
+  {
+    "id": 12,
+    "question": "Quand vous demandez à une IA de vous générer 5 idées d’articles, que se passe-t-il ?",
+    "options": [
+      "Une recherche rapide sur Wikipédia",
+      "Un calcul complexe sur plusieurs serveurs",
+      "Une simple lecture d’une base de données",
+      "Rien si vous fermez la fenêtre"
+    ],
+    "answer": "Un calcul complexe sur plusieurs serveurs",
+    "explanation": "Même une requête simple déclenche des calculs sur des milliers de nœuds informatiques."
+  },
+  {
+    "id": 13,
+    "question": "Vrai ou faux : Les IA entraînées une fois ne consomment plus d’énergie.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Même une IA entraînée doit être hébergée, maintenue et exécutée sur des serveurs 24/7."
+  },
+  {
+    "id": 14,
+    "question": "Quelle pratique numérique a l’empreinte carbone la plus élevée ?",
+    "options": [
+      "Envoyer un email",
+      "Regarder Netflix",
+      "Générer une image avec IA",
+      "Lire une page Wikipédia"
+    ],
+    "answer": "Générer une image avec IA",
+    "explanation": "Les images IA mobilisent fortement les GPU, bien plus que le streaming ou la lecture d’un site."
+  },
+  {
+    "id": 15,
+    "question": "Quelle IA générative est réputée pour sa consommation excessive de ressources à l'entraînement ?",
+    "options": [
+      "DALL·E",
+      "GPT-3",
+      "Gemini",
+      "Claude"
+    ],
+    "answer": "GPT-3",
+    "explanation": "GPT-3 a nécessité des semaines de calcul intensif sur des serveurs spécialisés (NVIDIA V100)."
+  },
+  {
+    "id": 16,
+    "question": "Vrai ou faux : Acheter un objet en ligne émet plus de CO₂ que l’acheter en boutique.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Livraisons, emballages et retours génèrent plus d’émissions que l’achat local."
+  },
+  {
+    "id": 17,
+    "question": "Quel geste réduit l’impact environnemental de vos achats en ligne ?",
+    "options": [
+      "Commander souvent mais en petites quantités",
+      "Utiliser le mode express",
+      "Regrouper ses commandes",
+      "Laisser son panier ouvert"
+    ],
+    "answer": "Regrouper ses commandes",
+    "explanation": "Cela réduit le nombre de livraisons et d’emballages."
+  },
+  {
+    "id": 18,
+    "question": "Combien de colis Amazon sont expédiés chaque jour dans le monde ?",
+    "options": [
+      "1 million",
+      "5 millions",
+      "10 millions",
+      "Plus de 20 millions"
+    ],
+    "answer": "Plus de 20 millions",
+    "explanation": "Amazon expédie plus de 20 millions de colis par jour, avec une empreinte logistique majeure."
+  },
+  {
+    "id": 19,
+    "question": "Quelle ressource est la plus sollicitée pour fabriquer un smartphone ?",
+    "options": [
+      "Plastique",
+      "Aluminium",
+      "Terres rares",
+      "Cuivre"
+    ],
+    "answer": "Terres rares",
+    "explanation": "Les composants électroniques reposent sur des métaux rares extraits avec un fort impact écologique."
+  },
+  {
+    "id": 20,
+    "question": "Vrai ou faux : Supprimer vos anciens mails peut réduire votre empreinte carbone.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Chaque mail stocké nécessite de l’énergie pour rester accessible sur les serveurs."
+  },
+  {
+    "id": 21,
+    "question": "Quel pourcentage des émissions numériques mondiales est causé par les achats en ligne ?",
+    "options": [
+      "Environ 2%",
+      "Environ 7%",
+      "Environ 15%",
+      "Plus de 20%"
+    ],
+    "answer": "Environ 7%",
+    "explanation": "Le e-commerce représente une part significative de l’empreinte numérique mondiale."
+  },
+  {
+    "id": 22,
+    "question": "Quelle pratique réduit le plus l’impact environnemental des retours produits ?",
+    "options": [
+      "Imprimer l’étiquette chez soi",
+      "Commander plusieurs tailles",
+      "Consommer local",
+      "Regarder les avis produits"
+    ],
+    "answer": "Regarder les avis produits",
+    "explanation": "Une meilleure information réduit les erreurs et donc les retours."
+  },
+  {
+    "id": 23,
+    "question": "Combien d’énergie consomme une heure de calcul sur un GPU haute performance ?",
+    "options": [
+      "0,5 kWh",
+      "1,5 kWh",
+      "3 kWh",
+      "5 kWh"
+    ],
+    "answer": "3 kWh",
+    "explanation": "Les GPU de calcul intensif peuvent consommer autant que 3 heures de sèche-linge par heure."
+  },
+  {
+    "id": 24,
+    "question": "Que représente l’équivalent CO₂ de 100 requêtes à ChatGPT environ ?",
+    "options": [
+      "Une promenade à vélo",
+      "Un trajet en voiture de 1 km",
+      "Un steak de bœuf",
+      "Une douche chaude de 5 minutes"
+    ],
+    "answer": "Un trajet en voiture de 1 km",
+    "explanation": "Une centaine de requêtes IA revient à peu près à 250 g de CO₂, proche d’un petit trajet en voiture."
+  },
+  {
+    "id": 25,
+    "question": "Pourquoi les data centers sont souvent installés en Scandinavie ?",
+    "options": [
+      "Pour des raisons fiscales",
+      "Pour la stabilité politique",
+      "Pour le climat froid",
+      "Pour la proximité de la mer"
+    ],
+    "answer": "Pour le climat froid",
+    "explanation": "Un climat frais permet de réduire les besoins en refroidissement des serveurs."
+  },
+  {
+    "id": 26,
+    "question": "Quel geste simple limite votre impact écologique en ligne ?",
+    "options": [
+      "Éteindre son écran",
+      "Passer au navigateur éco-responsable",
+      "Utiliser une IA avec VPN",
+      "Changer son mot de passe souvent"
+    ],
+    "answer": "Passer au navigateur éco-responsable",
+    "explanation": "Des navigateurs comme Ecosia financent la reforestation grâce à vos recherches."
+  },
+  {
+    "id": 27,
+    "question": "Vrai ou faux : Une IA locale (installée sur l’appareil) est plus éco-responsable.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Elle évite les allers-retours réseau et les calculs sur serveurs distants énergivores."
+  },
+  {
+    "id": 28,
+    "question": "Quel est le principal poste de consommation d’énergie d’un achat numérique ?",
+    "options": [
+      "Le paiement",
+      "Le stockage",
+      "La livraison",
+      "La production du produit"
+    ],
+    "answer": "La production du produit",
+    "explanation": "C’est la fabrication initiale (ex. : vêtements, appareils) qui consomme le plus d’énergie."
+  },
+  {
+    "id": 29,
+    "question": "Quel type d’IA a le plus fort impact environnemental ?",
+    "options": [
+      "IA symbolique",
+      "IA faible",
+      "IA générative",
+      "IA embarquée"
+    ],
+    "answer": "IA générative",
+    "explanation": "Les modèles génératifs sont ceux qui demandent le plus de calculs et de ressources."
+  },
+  {
+    "id": 30,
+    "question": "Quel indicateur permet de mesurer l’impact environnemental d’un produit numérique ?",
+    "options": [
+      "Indice de réparabilité",
+      "Poids de l’emballage",
+      "Durée de la garantie",
+      "Taille de l’écran"
+    ],
+    "answer": "Indice de réparabilité",
+    "explanation": "Cet indice évalue la facilité à réparer un produit, donc à prolonger sa durée de vie."
+  }
+]
