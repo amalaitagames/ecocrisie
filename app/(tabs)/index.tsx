@@ -79,11 +79,11 @@ export default function HomeScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-              onPress={() => router.push('/')}
+              onPress={() => router.push('/activities')}
               style={[styles.ctaButton, { backgroundColor: theme.primary, shadowColor: '#000' }]}
               activeOpacity={0.8}
           >
-            <Text style={styles.ctaText}>bouton comme vous voulez</Text>
+            <Text style={styles.ctaText}>Voir l'impacte</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
