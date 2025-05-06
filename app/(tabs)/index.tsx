@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router'; // au lieu de useNavigation
 import React from 'react';
 import {
   Image,
@@ -10,23 +11,15 @@ import {
   useColorScheme,
   View
 } from 'react-native';
+import {getTheme} from "@/app/constants/theme";
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
+  const router = useRouter();
 
-  const isDark = colorScheme === 'dark';
-
-  const theme = {
-    backgroundStart: isDark ? '#121212' : '#e0f2fe',
-    backgroundEnd: isDark ? '#1e1e1e' : '#ffffff',
-    text: isDark ? '#f1f5f9' : '#1e293b',
-    subtext: isDark ? 'rgba(203, 213, 225, 0.8)' : 'rgba(71, 85, 105, 0.8)',
-    card: isDark ? '#1e293b' : 'rgba(255, 255, 255, 0.7)',
-    border: isDark ? '#334155' : '#e2e8f0',
-    primary: '#10b981',
-    secondaryText: isDark ? '#a1a1aa' : '#64748b',
-  };
+  const isDark = useColorScheme() === 'dark';
+  const theme = getTheme(isDark);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundStart }]}>
@@ -57,7 +50,7 @@ export default function HomeScreen() {
           <View style={[styles.logoCircle, { backgroundColor: isDark ? '#065f46' : '#d1fae5' }]}>
             <Text style={styles.logo}>🌱</Text>
           </View>
-          <Text style={[styles.title, { color: theme.text }]}>Bienvenue sur GreenAI</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Bienvenue sur Ecocrisie</Text>
           <View style={[styles.subtitleBox, { backgroundColor: theme.card }]}>
             <Text style={[styles.subtitle, { color: theme.subtext }]}>
               Explorez l&apos;impact écologique de l&apos;IA avec élégance, sobriété et engagement.
@@ -77,9 +70,9 @@ export default function HomeScreen() {
 
         <View style={styles.buttons}>
           <TouchableOpacity
-            //onPress={() => navigation.navigate('Quiz')}
-            style={[styles.ctaButton, { backgroundColor: theme.primary, shadowColor: '#000' }]}
-            activeOpacity={0.8}
+              onPress={() => router.push('/quiz')}
+              style={[styles.ctaButton, { backgroundColor: theme.primary, shadowColor: '#000' }]}
+              activeOpacity={0.8}
           >
             <Text style={styles.ctaText}>Démarrer le quiz →</Text>
           </TouchableOpacity>
@@ -97,7 +90,7 @@ export default function HomeScreen() {
       </View>
 
       <Text style={[styles.footer, { color: theme.subtext }]}>
-        © 2025 GreenAI — minimal & mindful
+        © 2025 Ecocrisie - Tous droits réservés
       </Text>
     </SafeAreaView>
   );
