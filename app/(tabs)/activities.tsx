@@ -44,8 +44,6 @@ export default function ActivitiesScreen() {
   };
 
   const handleSubmit = () => {
-    // TODO: collecter les données du formulaire sélectionné
-    console.log(`Soumission pour activité : ${activityType}`);
   };
 
   return (
@@ -59,7 +57,9 @@ export default function ActivitiesScreen() {
           <View style={styles.pickerWrapper}>
             <Picker
               selectedValue={activityType}
-              onValueChange={(itemValue) => setActivityType(itemValue)}
+              onValueChange={(itemValue) => {
+                setActivityType(itemValue);
+              }}
               style={{ color: theme.text }}
             >
               <Picker.Item label="Déchets" value="waste" />
