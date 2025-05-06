@@ -1,17 +1,20 @@
+import { quotes } from '@/app/constants/quotes';
+import { getTheme } from '@/app/constants/theme';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    SafeAreaView,
-    useColorScheme,
     Alert,
     Animated,
+    Platform,
+    SafeAreaView,
+    Share,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useColorScheme,
+    View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { getTheme } from '@/app/constants/theme';
 import fullQuizData from '../../assets/json/quiz.json';
 
 export default function QuizScreen() {
@@ -55,6 +58,26 @@ export default function QuizScreen() {
         setShowConfetti(false);
     };
 
+    const handleShare = async (score: number) => {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      const message = `${quote}\n\nJ'ai obtenu ${score}/5 au quiz Écocrisie 🌱\nEt toi ? ➡️ https://ecocrisie.app`;
+
+      if (Platform.OS === 'web') {
+        try {
+          await navigator.clipboard.writeText(message);
+          alert('Texte copié dans le presse-papier 📋');
+        } catch (err) {
+          alert('Échec de la copie dans le presse-papier.');
+        }
+      } else {
+        try {
+          await Share.share({ message });
+        } catch (error: any) {
+          Alert.alert('Erreur lors du partage', error.message);
+        }
+      }
+    };
+
     const handleAnswer = (option: React.SetStateAction<null>) => {
         setSelected(option);
         setShowExplanation(true);
@@ -67,10 +90,15 @@ export default function QuizScreen() {
 
     const nextQuestion = () => {
         if (currentQuestion + 1 >= 5) {
+            const finalScore = score + (selected === questions[currentQuestion].answer ? 1 : 0);
             Alert.alert(
                 'Quiz terminé',
-                `Vous avez obtenu ${score + (selected === questions[currentQuestion].answer ? 1 : 0)}/5 réponses correctes.`,
+                `Vous avez obtenu ${finalScore}/5 réponses correctes.`,
                 [
+                    {
+                        text: 'Partager mes résultats',
+                        onPress: () => handleShare(finalScore),
+                    },
                     {
                         text: 'Rejouer',
                         onPress: () => {
