@@ -123,6 +123,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 32,
     justifyContent: 'space-between',
+    maxWidth: 500,
+    alignSelf: 'center',
+    width: '100%',
   },
   header: {
     alignItems: 'center',

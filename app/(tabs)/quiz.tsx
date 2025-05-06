@@ -1,5 +1,6 @@
 import { quotes } from '@/app/constants/quotes';
 import { getTheme } from '@/app/constants/theme';
+import ModalAlert from '../components/modalAlert';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -61,6 +62,18 @@ export default function QuizScreen() {
         }
     };
 
+    const [webAlert, setWebAlert] = useState<{
+        visible: boolean;
+        title: string;
+        message: string;
+        buttons: { text: string; onPress: () => void; style?: 'default' | 'cancel' | 'destructive' }[];
+    }>({
+        visible: false,
+        title: '',
+        message: '',
+        buttons: [],
+    });
+
     const animateEasterEgg = () => {
         const randomX = Math.floor(Math.random() * 250) - 125; // mouvement horizontal
         const randomY = Math.floor(Math.random() * 400) - 200; // mouvement vertical
@@ -121,33 +134,71 @@ export default function QuizScreen() {
     };
 
     const nextQuestion = () => {
+        const finalScore = score + (selected === questions[currentQuestion].answer ? 1 : 0);
+
         if (currentQuestion + 1 >= 5) {
-            const finalScore = score + (selected === questions[currentQuestion].answer ? 1 : 0);
-            Alert.alert(
-                'Quiz terminé',
-                `Vous avez obtenu ${score}/5 réponses correctes.`,
-                [
-                    {
-                        text: 'Partager mes résultats',
-                        onPress: () => handleShare(finalScore),
-                    },
-                    {
-                        text: 'Rejouer',
-                        onPress: () => {
-                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
-                            setQuestions(reshuffled.slice(0, 5));
-                            resetState();
+            if (Platform.OS === 'web') {
+                setWebAlert({
+                    visible: true,
+                    title: 'Quiz terminé',
+                    message: `Vous avez obtenu ${finalScore}/5 réponses correctes.`,
+                    buttons: [
+                        {
+                            text: 'Partager mes résultats',
+                            onPress: () => handleShare(finalScore),
                         },
-                    },
-                    { text: 'Retour à l’accueil', onPress: () => {
-                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
-                            setQuestions(reshuffled.slice(0, 5));
-                            resetState();
-                            router.replace('/')
-                        }
-                    },
-                ]
-            );
+                        {
+                            text: 'Rejouer',
+                            onPress: () => {
+                                const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                                setQuestions(reshuffled.slice(0, 5));
+                                resetState();
+                                setWebAlert(prev => ({ ...prev, visible: false }));
+                            },
+                        },
+                        {
+                            text: 'Retour à l’accueil',
+                            onPress: () => {
+                                const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                                setQuestions(reshuffled.slice(0, 5));
+                                resetState();
+                                router.replace('/');
+                                setWebAlert(prev => ({ ...prev, visible: false }));
+                            },
+                            style: 'destructive',
+                        },
+                    ],
+                });
+            } else {
+                Alert.alert(
+                    'Quiz terminé',
+                    `Vous avez obtenu ${score}/5 réponses correctes.`,
+                    [
+                        {
+                            text: 'Partager mes résultats',
+                            onPress: () => handleShare(finalScore),
+                        },
+                        {
+                            text: 'Rejouer',
+                            onPress: () => {
+                                const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                                setQuestions(reshuffled.slice(0, 5));
+                                resetState();
+                            },
+                        },
+                        {
+                            text: 'Retour à l’accueil',
+                            onPress: () => {
+                                const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                                setQuestions(reshuffled.slice(0, 5));
+                                resetState();
+                                router.replace('/');
+                            },
+                            style: 'destructive',
+                        },
+                    ]
+                );
+            }
         } else {
             setCurrentQuestion((q) => q + 1);
             setSelected(null);
@@ -157,23 +208,49 @@ export default function QuizScreen() {
     };
 
     const handleBack = () => {
-        Alert.alert(
-            'Quitter le quiz',
-            'Voulez-vous quitter le quiz ? Votre progression sera perdue.',
-            [
-                { text: 'Annuler', style: 'cancel' },
-                {
-                    text: 'Quitter',
-                    style: 'destructive',
-                    onPress: () => {
-                        const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
-                        setQuestions(reshuffled.slice(0, 5));
-                        resetState();
-                        router.replace('/');
+        if (Platform.OS === 'web') {
+            setWebAlert({
+                visible: true,
+                title: 'Quitter le quiz',
+                message: 'Voulez-vous quitter le quiz ? Votre progression sera perdue.',
+                buttons: [
+                    {
+                        text: 'Annuler',
+                        style: 'cancel',
+                        onPress: () => setWebAlert(prev => ({ ...prev, visible: false })),
                     },
-                },
-            ]
-        );
+                    {
+                        text: 'Quitter',
+                        style: 'destructive',
+                        onPress: () => {
+                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                            setQuestions(reshuffled.slice(0, 5));
+                            resetState();
+                            router.replace('/');
+                            setWebAlert(prev => ({ ...prev, visible: false }));
+                        },
+                    },
+                ],
+            });
+        } else {
+            Alert.alert(
+                'Quitter le quiz',
+                'Voulez-vous quitter le quiz ? Votre progression sera perdue.',
+                [
+                    { text: 'Annuler', style: 'cancel' },
+                    {
+                        text: 'Quitter',
+                        style: 'destructive',
+                        onPress: () => {
+                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                            setQuestions(reshuffled.slice(0, 5));
+                            resetState();
+                            router.replace('/');
+                        },
+                    },
+                ]
+            );
+        }
     };
 
     if (questions.length === 0) return null;
@@ -181,6 +258,13 @@ export default function QuizScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundEnd }]}>
+            <ModalAlert
+                visible={webAlert.visible}
+                title={webAlert.title}
+                message={webAlert.message}
+                buttons={webAlert.buttons}
+                onClose={() => setWebAlert(prev => ({ ...prev, visible: false }))}
+            />
             {showEasterEgg && (
                 <Animated.View
                     style={[
