@@ -1,4 +1,4 @@
-import {WeightUnitEnum} from "@/service/WeightUnitEnum";
+import {WeightUnitEnum} from "@/enitities/enums/WeightUnitEnum";
 
 export interface ClimatiqResponse {
 
