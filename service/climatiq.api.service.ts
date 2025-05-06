@@ -30,7 +30,6 @@ export class ClimatiqApiService {
         if (activity == null) {
             return '';
         }
-        let activityType = activity.activityParameters;
         let params = this.setBodyParamsFromActivityType(activity);
         return JSON.stringify({
             emission_factor: activity.emissionFactor,
