@@ -14,8 +14,6 @@ import {
 import {getTheme} from "@/app/constants/theme";
 
 export default function HomeScreen() {
-  const colorScheme = useColorScheme();
-  const navigation = useNavigation();
   const router = useRouter();
 
   const isDark = useColorScheme() === 'dark';
@@ -75,6 +73,14 @@ export default function HomeScreen() {
               activeOpacity={0.8}
           >
             <Text style={styles.ctaText}>Démarrer le quiz →</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+              onPress={() => router.push('/')}
+              style={[styles.ctaButton, { backgroundColor: theme.primary, shadowColor: '#000' }]}
+              activeOpacity={0.8}
+          >
+            <Text style={styles.ctaText}>bouton comme vous voulez</Text>
           </TouchableOpacity>
 
           <TouchableOpacity

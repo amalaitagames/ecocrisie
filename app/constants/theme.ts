@@ -7,6 +7,6 @@ export const getTheme = (isDark: boolean) => ({
     border: isDark ? '#334155' : '#e2e8f0',
     primary: '#10b981',
     secondaryText: isDark ? '#a1a1aa' : '#64748b',
-    correct: '#bbf7d0',
-    incorrect: '#fecaca',
+    correct: isDark ? '#0eca50' : '#bbf7d0',
+    incorrect: isDark ? '#f63232': '#fecaca',
 });

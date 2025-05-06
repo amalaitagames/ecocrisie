@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     View,
     Text,
@@ -7,13 +7,15 @@ import {
     SafeAreaView,
     useColorScheme,
     Alert,
+    Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import quizData from '../../assets/json/quiz.json';
-import {getTheme} from "@/app/constants/theme";
+import { getTheme } from '@/app/constants/theme';
+import fullQuizData from '../../assets/json/quiz.json';
 
 export default function QuizScreen() {
+    const [questions, setQuestions] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [showExplanation, setShowExplanation] = useState(false);
     const [selected, setSelected] = useState(null);
@@ -22,43 +24,91 @@ export default function QuizScreen() {
     const isDark = useColorScheme() === 'dark';
     const theme = getTheme(isDark);
     const router = useRouter();
-    const question = quizData[currentQuestion];
 
-    const handleAnswer = (option: string | React.SetStateAction<null>) => {
-        // @ts-ignore
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    // → Shuffle and pick 5 questions when component mounts
+    useEffect(() => {
+        const shuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+        setQuestions(shuffled.slice(0, 5));
+        resetState();
+    }, []);
+
+    // → Fade-in animation when explanation appears
+    useEffect(() => {
+        if (showExplanation) {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: true,
+            }).start();
+        } else {
+            fadeAnim.setValue(0);
+        }
+    }, [showExplanation]);
+
+    const resetState = () => {
+        setCurrentQuestion(0);
+        setShowExplanation(false);
+        setSelected(null);
+        setScore(0);
+        setShowConfetti(false);
+    };
+
+    const handleAnswer = (option: React.SetStateAction<null>) => {
         setSelected(option);
         setShowExplanation(true);
-        if (option === question.answer) {
+        if (option === questions[currentQuestion].answer) {
             setScore((s) => s + 1);
             setShowConfetti(true);
-            setTimeout(() => setShowConfetti(false), 2000);
+            setTimeout(() => setShowConfetti(false), 1500);
         }
     };
 
     const nextQuestion = () => {
-        setSelected(null);
-        setShowExplanation(false);
-        if (currentQuestion + 1 >= 5 || currentQuestion + 1 >= quizData.length) {
-            Alert.alert('Quiz terminé', `Vous avez obtenu ${score}/5 réponses correctes.`, [
-                { text: 'Retour à l’accueil', onPress: () => router.replace('/') },
-            ]);
+        if (currentQuestion + 1 >= 5) {
+            Alert.alert(
+                'Quiz terminé',
+                `Vous avez obtenu ${score + (selected === questions[currentQuestion].answer ? 1 : 0)}/5 réponses correctes.`,
+                [
+                    {
+                        text: 'Rejouer',
+                        onPress: () => {
+                            const reshuffled = [...fullQuizData].sort(() => 0.5 - Math.random());
+                            setQuestions(reshuffled.slice(0, 5));
+                            resetState();
+                        },
+                    },
+                    { text: 'Retour à l’accueil', onPress: () => router.replace('/') },
+                ]
+            );
         } else {
             setCurrentQuestion((q) => q + 1);
+            setSelected(null);
+            setShowExplanation(false);
         }
     };
 
     const handleBack = () => {
         Alert.alert(
             'Quitter le quiz',
-            'Êtes-vous sûr de vouloir quitter le quiz ? Votre progression sera perdue.',
+            'Voulez-vous quitter le quiz ? Votre progression sera perdue.',
             [
                 { text: 'Annuler', style: 'cancel' },
-                { text: 'Quitter', style: 'destructive', onPress: () => router.replace('/') },
+                {
+                    text: 'Quitter',
+                    style: 'destructive',
+                    onPress: () => {
+                        resetState();
+                        router.replace('/');
+                    },
+                },
             ]
         );
     };
 
-    if (!question) return null;
+    if (questions.length === 0) return null;
+    const question = questions[currentQuestion];
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundEnd }]}>
@@ -74,7 +124,7 @@ export default function QuizScreen() {
                     {question.question}
                 </Text>
 
-                {question.options.map((option, index) => {
+                {question.options.map((option: string | number | bigint | boolean | React.SetStateAction<null> | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | undefined, index: React.Key | null | undefined) => {
                     const isCorrect = option === question.answer;
                     const isSelected = selected === option;
 
@@ -96,7 +146,7 @@ export default function QuizScreen() {
                 })}
 
                 {showExplanation && (
-                    <View style={styles.explanationBox}>
+                    <Animated.View style={[styles.explanationBox, { opacity: fadeAnim }]}>
                         <Text style={[styles.explanationText, { color: theme.text }]}>
                             {selected === question.answer ? '✅ Bonne réponse ! ' : '❌ Mauvaise réponse. '}
                             {question.explanation}
@@ -108,7 +158,7 @@ export default function QuizScreen() {
                         >
                             <Text style={styles.nextText}>Question suivante →</Text>
                         </TouchableOpacity>
-                    </View>
+                    </Animated.View>
                 )}
             </View>
 
@@ -133,6 +183,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
     },
     score: {
+        fontStyle : 'italic',
         fontSize: 18,
         fontWeight: '500',
     },
@@ -140,7 +191,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         gap: 16,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
     },
     questionText: {
         fontSize: 20,
