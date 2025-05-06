@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
+import { getTheme } from "@/app/constants/theme";
 import { useRouter } from 'expo-router'; // au lieu de useNavigation
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import {
   Image,
@@ -11,7 +11,6 @@ import {
   useColorScheme,
   View
 } from 'react-native';
-import {getTheme} from "@/app/constants/theme";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -84,6 +83,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
+          onPress={() => router.push('/more')}
             style={[
               styles.secondaryButton,
               { borderColor: 'transparent' },
