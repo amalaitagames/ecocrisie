@@ -1,7 +1,6 @@
-import {ClimatiqRequestParameters} from "@/enitities/ClimatiqRequestParameters";
 import {MoneyUnitEnum} from "@/enitities/enums/MoneyUnitEnum";
 
-export interface GoodAndServicesRequestParams extends ClimatiqRequestParameters {
+export interface GoodAndServicesRequestParams {
     money: number,
     moneyUnit : MoneyUnitEnum;
 }

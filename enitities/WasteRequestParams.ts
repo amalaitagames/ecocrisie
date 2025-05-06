@@ -1,7 +1,6 @@
-import {ClimatiqRequestParameters} from "@/enitities/ClimatiqRequestParameters";
 import {WeightUnitEnum} from "@/enitities/enums/WeightUnitEnum";
 
-export interface WasteRequestParams extends ClimatiqRequestParameters {
+export interface WasteRequestParams {
 
     weight: number,
     weightUnit: WeightUnitEnum

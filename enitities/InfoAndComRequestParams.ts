@@ -1,8 +1,7 @@
-import {ClimatiqRequestParameters} from "@/enitities/ClimatiqRequestParameters";
 import {DataUnitEnum} from "@/enitities/enums/DataUnitEnum";
 import {TimeUnitEnum} from "@/enitities/enums/TimeUnitEnum";
 
-export interface InfoAndComRequestParams extends ClimatiqRequestParameters {
+export interface InfoAndComRequestParams {
 
     data: number,
     dataUnit: DataUnitEnum,
